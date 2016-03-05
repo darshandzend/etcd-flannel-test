@@ -5,7 +5,7 @@ coreos:
   etcd:
     addr: "$public_ipv4:4001"
     peer-addr: "$public_ipv4:7001"
-    discovery: https://discovery.etcd.io/446652dfeec00d64ab0b2aaf51c6b8a4
+    discovery: https://discovery.etcd.io/074a646edecb412f84d3682ddcbfb10f
   fleet:
     public-ip: "$public_ipv4"
   flannel:
@@ -20,7 +20,7 @@ coreos:
     - name: 50-network-config.conf
       content: |
         [Service]
-        ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{ "Network": "10.1.0.0/16" }'
+        ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{ "Network": "10.1.0.0/16", "SubnetLen":16 }'
     command: start
   - name: docker-tcp.socket
     command: start
@@ -36,9 +36,7 @@ coreos:
 
       [Install]
       WantedBy=sockets.target
-
-  # Webtest service running in a Docker container
-  - name: redis.service
+  - name: webtest.service
     content: |
       [Unit]
       Requires=flanneld.service
