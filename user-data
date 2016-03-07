@@ -32,13 +32,3 @@ coreos:
         [Unit]
         Requires=flanneld.service
         After=flanneld.service
-  - name: webtest.service
-    content: |
-      [Unit]
-      Requires=flanneld.service
-      After=flanneld.service
-
-      [Service]
-      ExecStart=/usr/bin/docker run -p 8080:8080 docwhat/webtest
-      Restart=always
-    command: start
