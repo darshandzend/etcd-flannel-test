@@ -4,8 +4,7 @@ $num_instances=3
 # Used to fetch a new discovery token for a cluster of size $num_instances
 $new_discovery_url="https://discovery.etcd.io/new?size=#{$num_instances}"
 
-# To automatically replace the discovery token on 'vagrant up', uncomment
-# the lines below:
+# Automatically replace the discovery token on 'vagrant up'
 
 if File.exists?('user-data') && ARGV[0].eql?('up')
   require 'open-uri'
@@ -54,7 +53,7 @@ end
 #$image_version = "current"
 
 # Official CoreOS channel from which updates should be downloaded
-#$update_channel='beta'
+#$update_channel='alpha'
 
 # Log the serial consoles of CoreOS VMs to log/
 # Enable by setting value to true, disable with false
