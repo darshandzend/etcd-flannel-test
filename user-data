@@ -2,16 +2,18 @@
 
 ---
 coreos:
-  etcd:
-    addr: "$public_ipv4:4001"
-    peer-addr: "$public_ipv4:7001"
-    discovery: https://discovery.etcd.io/074a646edecb412f84d3682ddcbfb10f
+  etcd2:
+    discovery: https://discovery.etcd.io/2053942ed10d4e35dcaace8e0a8818c0
+    advertise-client-urls: http://$public_ipv4:2379
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
   fleet:
     public-ip: "$public_ipv4"
   flannel:
     interface: "$public_ipv4"
   units:
-  - name: etcd.service
+  - name: etcd2.service
     command: start
   - name: fleet.service
     command: start
@@ -20,8 +22,16 @@ coreos:
     - name: 50-network-config.conf
       content: |
         [Service]
-        ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{ "Network": "10.1.0.0/16", "SubnetLen":16 }'
+        ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{ "Network": "10.1.0.0/16" }'
     command: start
+  - name: docker.service
+    command: start
+    drop-ins:
+    - name: 40-requires.conf
+      content: |
+        [Unit]
+        Requires=flanneld.service
+        After=flanneld.service
   - name: webtest.service
     content: |
       [Unit]
